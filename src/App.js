@@ -1,25 +1,37 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from 'react'
+import { subscribe, dispatch, getState } from "./store"
+import { add, minus } from './store/reducers/count'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+export default class App extends Component {
+  componentDidMount() {
+    subscribe(() => {
+      this.forceUpdate()
+    })
+  }
+  add() {
+    dispatch(add(2))
+  }
+  minus() {
+    dispatch(minus(3))
+  }
+  asyAdd = () => {
+    dispatch(dispatch => {
+      setTimeout(() => {
+        dispatch(add(4))
+      }, 2000)
+      console.log(getState())
+    })
+  }
+  render() {
+    const {number} = getState()
+    return (
+      <div className="App">
+        <h3>ReduxPage</h3>
+        <p>{number}</p>
+        <button onClick={this.add}>add</button>
+        <button onClick={this.minus}>minus</button>
+        <button onClick={this.asyAdd}>asyAdd</button>
+      </div>
+    );
+  }
 }
-
-export default App;
